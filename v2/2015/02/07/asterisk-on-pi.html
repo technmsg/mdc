@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Asterisk on Raspberry Pi</title>
+<link rel="alternate" type="application/atom+xml" title="v2 RSS Feed" href="https://moundalexis.com/v2/index.atom.xml" />
+<link rel="stylesheet" type="text/css" href="/v2/css/skeleton.css">
+<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="@technmsg" />
+<meta property="twitter:title" content="Asterisk on Raspberry Pi" />
+<meta property="twitter:description" content="In my continuing quest to reduce my energy footprint, I replaced a desktop sized server with a small credit-card sized computer." />
+<meta property="twitter:url" content="https://moundalexis.com/v2/2015/02/07/asterisk-on-pi.html" />
+</head>
+
+<body>
+<div class="container">
+<!-- end of header -->
+<!-- title: Asterisk on Raspberry Pi -->
+<!-- categories: howto -->
+<!-- tags: electricity,asterisk -->
+<!-- published: 2015-02-07T12:44:00-05:00 -->
+<!-- updated: 2020-08-09T12:44:00-05:00 -->
+<!-- summary: In my continuing quest to reduce my energy footprint, I replaced a desktop sized server with a small credit-card sized computer. -->
+
+<h1>Asterisk on Raspberry Pi</h1>
+
+<p>In my <a href="/v2/2015/01/27/standby-consumption.html">continuing quest</a> to <a href="/v2/solar/">reduce my energy consumption</a>, I decided to replace a <a href="https://www.google.com/search?q=dell+poweredge+sc440&amp;tbm=isch">desktop sized server</a> with a small <a href="https://www.raspberrypi.org/help/videos/">credit-card sized computer</a>.</p>
+
+<p>ℹ️ As an Amazon Associate I earn from qualifying purchases. (<a href="/v2/affiliates.html">details</a>)</p>
+
+<h2>The Server</h2>
+
+<p>The server was primarily used as an off-site backup server for a client. Every night the server would kick off an rsync job via cron to pull updated content from the client's on-site file server. With the advent of cloud-based storage and backup, the client no longer had a need for the rsync-based solution.</p>
+
+<p>Other services running on the box included <a href="http://www.subsonic.org/">Subsonic media streamer</a>, a shell script <a href="https://www.noip.com/">no-ip</a> DDNS updater (for Subsonic), and <a href="http://www.moundalexis.com/tm/2011/08/23/asterisk-with-google-voice-and-cisco-7940g/">my Asterisk installation</a>. I haven't used Subsonic in ages, preferring instead to stream Pandora. So that left Asterisk as the only real service to be migrated.</p>
+
+<p>The Dell PowerEdge SC 440 is fairly energy efficient given its technical specifications, but the there's no getting around the fact that the system doesn't sleep and doesn't spin down idle disks. While the idea of backup servers waking on LAN to perform their duties is rather intriguing, it wouldn't have worked for the Asterisk server.</p>
+
+<h2>The Pi</h2>
+
+<p>Getting going with Raspberry Pi was simple. Just buy the thing, flash the micro SD card with a system image of your choosing, and you're off!</p>
+
+<p>Buying was simple enough, although I didn't do my homework and mistakenly ordered a standard SD card (the B+ uses micro SD).</p>
+
+<ul>
+<li><a href="https://www.amazon.com/gp/product/B00LAA91R2/?tag=v2mdc-20">Raspberry Pi Model B+ (B Plus) With Clear Case</a></li>
+<li><a href="https://www.amazon.com/gp/product/B00M55C0LK/?tag=v2mdc-20">SanDisk Ultra 16GB UHS-I/Class 10 Micro SDHC Memory</a></li>
+</ul>
+
+<p>This lot ran $42.86 shipped via <a href="https://www.amazon.com/gp/video/primesignup?tag=v2mdc-20">Amazon Prime</a>.</p>
+
+<p>Did I mention that <a href="https://www.flickr.com/photos/techmsg/16279746717/">it's incredibly small</a>?</p>
+
+<p><a href="https://www.flickr.com/photos/techmsg/16279746717/" title="Raspberry Pi B+ by techmsg, on Flickr"><img src="https://farm8.staticflickr.com/7293/16279746717_355a373726_z.jpg" width="640" height="360" alt="Raspberry Pi B+"></a></p>
+
+<p>I decided to run <a href="http://www.raspberry-asterisk.org/about/">RasPBX</a>, a version of <a href="https://www.freepbx.org/">FreePBX</a> (built on <a href="https://www.asterisk.org/">Asterisk</a>) specifically designed to run on Raspberry Pi. Isn't open source amazing?</p>
+
+<p>I followed <a href="http://www.raspberry-asterisk.org/documentation/">the instructions</a> to <a href="https://elinux.org/RPi_Easy_SD_Card_Setup#Flashing_the_SD_card_using_Mac_OS_X">flash the SD card</a> with the <a href="http://www.raspberry-asterisk.org/downloads/">RasPBX image</a> (which takes several minutes), inserted the card, applied power, and the thing booted right up. I did the post-install via SSH, without a monitor; the plan is to run the Pi headless, so I figured I should start out that way.</p>
+
+<p>Working with the Pi B+ feels like any other Linux server, aside from being slightly less responsive (understandable, given its single 700 MHz core and 512 MB memory) and running silently. It was trivial to expand the partition size using existing tools, configure a static IP, and get key-based authentication working; getting exim4 to work with Verizon's SMTP relays might be a little more tricky. I don't plan to spend much time administering the thing, so I'm hoping I won't have to learn too many of Ubuntu's quirks.</p>
+
+<h2>The Telephony</h2>
+
+<p>Configuring FreePBX took a little bit of discovery since I was used to editing Asterisk configuration files directly, but it took <em>far</em> less time to get working than building Asterisk from source (required back in 2011 for chan_gtalk support, which <a href="https://wiki.asterisk.org/wiki/display/AST/Calling+using+Google">has since been deprecated in favor of chan_motif</a>).</p>
+
+<p>Since I still had the old server on the network, I did have to change the Cisco 7940 configuration to use the Pi. I've yet to cut over the TFTP server, but it looks like it'll be fairly straightforward.</p>
+
+<p>I also wanted my cordless phones to be used alongside the SIP handsets, both for inbound and outbound calls. Previously they could be used to place/receive Google Voice calls using an <a href="https://www.amazon.com/gp/product/B004LO098O/?tag=v2mdc-20">OBi100 VoIP bridge</a>, but at the expense of Asterisk not receiving inbound calls (due to conflicting XMPP priority).</p>
+
+<p>As it turns out, the OBi100 is an incredibly versatile piece of hardware. Not only can it act as an XMPP client, it can act as a SIP client too. I should have figured. By <a href="https://wiki.freepbx.org/pages/viewpage.action?pageId=4161592">configuring the OBi100 to act as an extension</a>, I get the desired behavior. Note that the instructions reference the <a href="https://www.amazon.com/gp/product/B0045RMEPI?tag=v2mdc-20">OBi110</a>, but work fine with the OBi100.</p>
+
+<p>The end solution in Asterisk looks like this:</p>
+
+<ul>
+<li>the OBi100 is configured as extension 100</li>
+<li>each Cisco handset is configured with two SIP lines (e.g. extension 102 &amp; 112), one that will be used for inbound trunks and one for general usage</li>
+<li>Ring Group 600 is configured for extensions 100, 102, 104</li>
+<li>inbound trunk GV goes to Ring Group 600, thereby ringing all handsets</li>
+</ul>
+
+<p>The OBi supports conference and transfers, so any handset can transfer a call to another. If I'm on a conference call and want to move around, I can easily transfer the call to a cordless phone; or vice versa, if I take a call on a cordless and want to transfer it back to a quality speakerphone.</p>
+
+<p>And as usual, all the niceties with Asterisk such as music on hold, conference bridging, call forwarding, IVR, etc. are still available. Nothing has changed there, but it's now running on a smaller hardware footprint. As far as Asterisk performance is concerned, I haven't noticed a difference in call quality or latency. It just works.</p>
+
+<p>Special thanks to Josh and Emily for assisting with trunk testing.</p>
+
+<h2>Energy Impact</h2>
+
+<p>With the transition from a desktop server to a Raspberry Pi, I didn't lose any functionality that I cared about. In fact, with the reconfiguration of the OBi I actually have improved functionality.</p>
+
+<p>While <a href="https://raspi.tv/2014/how-much-less-power-does-the-raspberry-pi-b-use-than-the-old-model-b">power figures on the Pi</a> are available, there's no substitute for checking out actual usage as installed. So I pulled out the <a href="https://www.amazon.com/gp/product/B00E945SJG/?tag=v2mdc-20">power meter</a> to verify. While idle:</p>
+
+<ul>
+<li>the Dell PowerEdge SC 440 consumes 100W, or 72 kWh ($9.36) per month</li>
+<li>the Raspberry Pi B+ consumes 1.6W, or 1.5 kWh ($0.20) per month</li>
+</ul>
+
+<p>It's not a fair comparison, but given that I don't <em>need</em> those extra drives anymore, I'm happy to say that with the reduction in my electric bill the Pi will handily pay for itself about 4 months.</p>
+
+<p>And did I mentioned that it's really small and cool? :)</p>
+<!-- start of footer -->
+<p><small>Last Modified: <a href="https://github.com/technmsg/blog/blob/master/v2/content/2015/02/07/asterisk-on-pi.md">2020-08-09</a></small></p>
+
+<p>&sect;</p>
+
+<!-- minimal navigation -->
+<p>
+  <a href="/v2/">Home</a> | <a href="/v2/all.html">All Entries</a> | <a href="/v2/search.html">Search</a> | <a href="/v2/errata.html">Errata</a>
+</p>
+
+<!-- copyright and licensing -->
+<p><small>Copyright &copy; 2014-2023 <a href="/v2/alex.html">Alex Moundalexis</a>, licensed under a <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons License</a>. Some rights reserved.</small></p>
+
+<!-- cloudflare web analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "fcf30257ddf04d25ac73a5536c7257e3"}'></script>
+
+</div>
+</body>
+</html>
