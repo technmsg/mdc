@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Callcentric on Cisco 7940</title>
+<link rel="alternate" type="application/atom+xml" title="v2 RSS Feed" href="https://moundalexis.com/v2/index.atom.xml" />
+<link rel="stylesheet" type="text/css" href="/v2/css/skeleton.css">
+<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="@technmsg" />
+<meta property="twitter:title" content="Callcentric on Cisco 7940" />
+<meta property="twitter:description" content="Configuring a Cisco 7940 IP Phone to use Callcentric without an intermediate PBX." />
+<meta property="twitter:url" content="https://moundalexis.com/v2/2021/07/11/callcentric-cisco-7940.html" />
+</head>
+
+<body>
+<div class="container">
+<!-- end of header -->
+<!-- title: Callcentric on Cisco 7940 -->
+<!-- categories: howto -->
+<!-- tags: cisco,pbx,callcentric -->
+<!-- published: 2021-07-11T09:30:00-05:00 -->
+<!-- updated: 2021-08-01T11:30:00-05:00 -->
+<!-- summary: Configuring a Cisco 7940 IP Phone to use Callcentric without an intermediate PBX. -->
+
+<h1>Callcentric on Cisco 7940</h1>
+
+<p>ℹ️ As an Amazon Associate I earn from qualifying purchases. (<a href="/v2/affiliates.html">details</a>)</p>
+
+<p>Callcentric <a href="https://www.callcentric.com/support/">supports many different devices</a> but the Cisco 7940 IP phone is not one of them.</p>
+
+<p>The Cisco 7940 was an early contender in the enterprise market for use with Cisco CallManager and never intended for home use, however once <a href="https://www.cisco.com/c/en/us/support/docs/collaboration-endpoints/unified-ip-phone-7900-series/5455-handset-to-sip.html">converted to be a SIP phone</a> these devices continue to be workhorses long past their <a href="https://www.cisco.com/c/en/us/products/collateral/collaboration-endpoints/unified-ip-phone-7900-series/end_of_life_notice_c51-574072.html">end-of-life</a> and <a href="https://www.cisco.com/c/en/us/obsolete/collaboration-endpoints/cisco-unified-ip-phone-7940g.html">retirement</a> dates.</p>
+
+<p>By adapting the <a href="https://www.callcentric.com/support/device/other">generic SIP configuration</a>, the Cisco 7940 can be configured to register with Callcentric directly without an intermediate PBX. </p>
+
+<p>These instructions assume you’ll be placing configuration files on a TFTP server for the phone to pick up during initialization. There will be many other parameters defined in your configuration files, these are just the ones specific to Callcentric.</p>
+
+<p>Phone-specific configuration:</p>
+
+<pre>
+# SIP Configuration Generic File - SIP&lt;MAC&gt;.cnf
+# Platform : Cisco Systems, Inc. IP Phone CP-7940G
+
+# Line 2 extension user ID
+line2_name: "1777MYCCID" ; or 1777MYCCIDEXT
+
+# Line 2 Registration Authentication
+line2_authname: "1777MYCCID" ; or 1777MYCCIDEXT
+
+# Line 2 Registration Password
+line2_password: "*******"
+
+# Line 2 Display Name (Display name to use for SIP messaging)
+line2_displayname: "ACME Reception"
+
+# Line 2 Short Name (Labels a line key with a name other than the directory number)
+line2_shortname: "Callcentric"
+</pre>
+
+<p>Default (all phone) configuration:</p>
+
+<pre>
+# SIP Default Configuration File - SIPDefault.cnf
+
+# Proxies
+proxy2_address: "callcentric.com" ; Can be dotted IP or FQDN
+proxy_register: 1
+
+# NAT/Firewall Traversal (if needed for your install, not likely specific to Callcentric)
+nat_enable: 1; 0-Disabled (default), 1-Enabled
+nat_address: "WAN_ADDRESS"; WAN address of NAT box (dotted IP or DNS A record only)
+nat_received_processing: 1; 0-Disabled (default), 1-Enabled
+</pre>
+
+<p>And that’s it!</p>
+
+<h2>Tips</h2>
+
+<p>Unless you’ve configured a dial-plan, setting a backup proxy (<code>proxy_backup</code>) or emergency proxy (<code>proxy_emergency</code>) is not recommended as these can prevent the handset from connecting to the line-specific proxies.</p>
+
+<p>To debug SIP registration issues: telnet to the phone, enable debug of SIP messaging, show current registration state, force a registration (of line 2 in this example), and then disable debugging.</p>
+
+<pre>
+$ telnet phoneIP
+SIP Phone> debug sip-messages
+SIP Phone> show register
+SIP Phone> register 1 2
+SIP Phone> undebug sip-messages
+</pre>
+
+<p>SIP state and SIP registration state can also be debugged using the following flags:</p>
+
+<pre>
+SIP Phone> debug sip-state sip-reg-state
+</pre>
+
+<p>A word about the order of configuration processes, according to Cisco:</p>
+
+<blockquote>
+  <p>Parameters in the default configuration file override those stored in the phone's flash memory. Parameters in the phone-specific configuration file override those stored in the default configuration file. When a phone is rebooted, the manually set values of parameters are overridden by the values found in the configuration files (if the same parameters exist in at least one of the configuration files).</p>
+</blockquote>
+
+<p>Hope this helps!</p>
+
+<p>🆕 <strong>Update 08/01/21</strong>: After making these changes I've noticed the lower softkeys (i.e. New Call, Forward, etc) disappear from the main screen after a day or two. The handset still functions properly otherwise, inbound and outbound calls still complete, and the softkeys always return after a reboot. The only changed values were <code>nat_enable</code>, <code>nat_address</code>, <code>nat_received_processing</code>, and the specification of a named SIP provider instead of an IP address; my theory is that some combination of additional DNS lookups or NAT processing are exposing some sort of bug. Given that the 7940 is EOL I've reverted to using an intermediate PBX without NAT. I've also been experimenting with a <a href="https://amzn.to/3xkX9oW">Grandstream GX1625</a> as a replacement; the build quality isn't anywhere near the Cisco handset but acceptable given the cost, but it's a supported platform and has per-account NAT settings.</p>
+
+<h2>References</h2>
+
+<p>Cisco SIP IP Administrator Guide, Version 8.0 (updated 2/14/2014)</p>
+
+<ul>
+<li>Chapter: <a href="https://www.cisco.com/c/en/us/td/docs/voice_ip_comm/cuipph/7960g_7940g/sip/8_0/english/administration/guide/8_0/sipins80.html">Initializing Cisco SIP IP Phones</a></li>
+<li>Chapter: <a href="https://www.cisco.com/c/en/us/td/docs/voice_ip_comm/cuipph/7960g_7940g/sip/8_0/english/administration/guide/8_0/sipmn80.html">Managing Cisco SIP IP Phones</a></li>
+<li>Chapter: <a href="https://www.cisco.com/c/en/us/td/docs/voice_ip_comm/cuipph/7960g_7940g/sip/8_0/english/administration/guide/8_0/siptrb80.html">Monitoring Cisco SIP IP Phones</a></li>
+<li>Chapter: <a href="https://www.cisco.com/c/en/us/td/docs/voice_ip_comm/cuipph/7960g_7940g/sip/8_0/english/administration/guide/8_0/sipaxd80.html">Configurable Parameters for the SIP IP Phone</a></li>
+</ul>
+
+<p>FreePBX Community: <a href="https://community.freepbx.org/t/cisco-7940g/24399">Cisco 7940G</a></p>
+
+<p>VOIPo: <a href="https://www.voipo.com/forums/showthread.php/1875-Cisco-7940-Help">Cisco 7940 Help</a></p>
+
+<p>Cisco Product Support: <a href="https://www.cisco.com/c/en/us/support/docs/collaboration-endpoints/unified-ip-phone-7900-series/5455-handset-to-sip.html">Converting a Cisco 7940/7960 CallManager Phone to a SIP Phone and the Reverse Process</a> (updated 9/19/2014)</p>
+
+<p>Cisco: <a href="https://www.cisco.com/c/en/us/products/collateral/collaboration-endpoints/unified-ip-phone-7900-series/end_of_life_notice_c51-574072.html">End-of-Life Milestones and Dates for the Cisco Unified IP Phones 7940G and 7960G</a> (updated 1/22/2010)</p>
+
+<p>Cisco: <a href="https://www.cisco.com/c/en/us/obsolete/collaboration-endpoints/cisco-unified-ip-phone-7940g.html">Cisco Unified IP Phone 7940G - Retirement Notification</a></p>
+<!-- start of footer -->
+<p><small>Last Modified: <a href="https://github.com/technmsg/blog/blob/master/v2/content/2021/07/11/callcentric-cisco-7940.md">2021-08-01</a></small></p>
+
+<p>&sect;</p>
+
+<!-- minimal navigation -->
+<p>
+  <a href="/v2/">Home</a> | <a href="/v2/all.html">All Entries</a> | <a href="/v2/search.html">Search</a> | <a href="/v2/errata.html">Errata</a>
+</p>
+
+<!-- copyright and licensing -->
+<p><small>Copyright &copy; 2014-2023 <a href="/v2/alex.html">Alex Moundalexis</a>, licensed under a <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons License</a>. Some rights reserved.</small></p>
+
+<!-- cloudflare web analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "fcf30257ddf04d25ac73a5536c7257e3"}'></script>
+
+</div>
+</body>
+</html>

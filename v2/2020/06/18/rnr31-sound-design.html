@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>RNR 31 Sound Design</title>
+<link rel="alternate" type="application/atom+xml" title="v2 RSS Feed" href="https://moundalexis.com/v2/index.atom.xml" />
+<link rel="stylesheet" type="text/css" href="/v2/css/skeleton.css">
+<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="@technmsg" />
+<meta property="twitter:title" content="RNR 31 Sound Design" />
+<meta property="twitter:description" content="High level sound design for RNR 31 including gear list." />
+<meta property="twitter:url" content="https://moundalexis.com/v2/2020/06/18/rnr31-sound-design.html" />
+</head>
+
+<body>
+<div class="container">
+<!-- end of header -->
+<!-- title: RNR 31 Sound Design -->
+<!-- categories: howto -->
+<!-- tags: sound,design,rnr,microphones -->
+<!-- published: 2020-06-18T23:00:00-05:00 -->
+<!-- updated: 2020-06-18T23:00:00-05:00 -->
+<!-- summary: High level sound design for RNR 31 including gear list. -->
+
+<h1>RNR Sound Design</h1>
+
+<p>ℹ️ As an Amazon Associate I earn from qualifying purchases. (<a href="/v2/affiliates.html">details</a>)</p>
+
+<p>Rock 'N Roll Revival (RNR) is a two act variety show performed in, produced by, and run primarily by high school students.</p>
+
+<p>Over the past couple years I've been responsible for RNR sound design. Despite many years in-house experience, seeking advice from and learning from those in the industry, I don't consider myself a professional. One perk of a long-running show is that we have flexibility to try new things, experiment with new technologies and equipment, and my students and I get to learn together.</p>
+
+<p>The following provides an overview of the sound design for RNR 31.</p>
+
+<p>Note: None of the products described have been sponsored. If you find this information useful, know that we do receive a small commission when you purchase items from Amazon using the links below.</p>
+
+<h2>Signal Flow</h2>
+
+<p>A rough diagram of the signal flow.</p>
+
+<p><a href="https://www.flickr.com/photos/techmsg/50020827893/in/dateposted/" title="RNR 31 Sound Design"><img src="https://live.staticflickr.com/65535/50020827893_0c69e5ac59_z.jpg" width="573" height="640" alt="RNR 31 Sound Design"></a></p>
+
+<p>We use <a href="https://www.rapcohorizon.com/category/84/nspl-concert-snakes">RapcoHorizon NSPL Concert Series Snakes</a> for band inputs; the enclosures are rugged, provide ample space for labeling, and tend to be more economical than equivalent Whirlwind snakes. Instrument mics flow into one of two 50-foot <a href="https://www.rapcohorizon.com/product/257/nspl-12x0-all-mic-snakes">12x0 mic snakes</a> on either side of the band deck whose tails are patched into a 150-foot <a href="https://www.rapcohorizon.com/product/263/nspl-24x8-xlr-return-snakes">24x8 main snake</a> beneath; the eight XLR returns aren't utilized for this show.</p>
+
+<p><a href="https://www.flickr.com/photos/techmsg/49626336076/in/album-72157712649718376/" title="IMG_20200304_193734694"><img src="https://live.staticflickr.com/65535/49626336076_949c86d76d_z.jpg" width="640" height="360" alt="IMG_20200304_193734694"></a></p>
+
+<p><a href="https://www.flickr.com/photos/techmsg/49631742443/in/album-72157712649718376/" title="IMG_20200306_170527971"><img src="https://live.staticflickr.com/65535/49631742443_aa953246bb_z.jpg" width="640" height="360" alt="IMG_20200306_170527971"></a></p>
+
+<p>The main snake tails are patched into a passive 48-channel splitter: one side is patched to MW console inputs, the other is patched to a stage box backstage and sent via redundant Ethernet cables to FOH.</p>
+
+<p>Each audio console sets its own input levels and EQ.</p>
+
+<p>Vocal mics are routed to FOH directly; leads over <a href="https://www.audinate.com/">Dante</a> and backups via XLR. MW receives lead and backup vocal mixes by way of two FOH mono groups sent to the stage box; a third mono group "admin mix" is sent in a similar fashion, providing talkback, pre-show music, announcements, and the occasional sound effect.</p>
+
+<h3>Front of House</h3>
+
+<p>Front of house (FOH) is primarily responsible for the main L/R mix, which is what the audience hears. One student is responsible for the band mix and another for vocals. Most channels are routed directly to L/R. Lead vocals, backup vocals, drums, guitars, keys, and brass are assigned to a series of DCAs so their relative levels can be adjusted and group mutes can be set/unset without having to switch pages/layers.</p>
+
+<p><a href="https://www.flickr.com/photos/techmsg/49653394993/in/album-72157712649718376/" title="IMG_20200312_204406353"><img src="https://live.staticflickr.com/65535/49653394993_7514355f90_z.jpg" width="640" height="360" alt="IMG_20200312_204406353"></a></p>
+
+<p>FOH is also responsible for a backstage monitor mix. This mix is used for talkback purposes during rehearsals, but also as a monitor mix for vocalists singing backstage to provide reinforcement or chorus.</p>
+
+<p>The stage box connected to the FOH console has many configurable outputs. Through software patching, some of the outputs we configure: </p>
+
+<ol>
+<li>main L (to PA)</li>
+<li>main R (to PA) </li>
+<li>main L/R sum (to dressing room)</li>
+<li>aux 1 (backstage monitor)</li>
+<li>mono group 1 (lead vocals, to MW)</li>
+<li>mono group 2 (backup vocals, to MW)</li>
+<li>mono group 3 (admin, to MW)</li>
+</ol>
+
+<p>The FOH console has several configurable outputs on its surface as well. One of those outputs sends a main L/R sum to a <a href="https://amzn.to/2XVxG77">Radial TX4 Catapult</a> snake; the thru XLR goes to our videographer to supplement room mics, the Ethernet output goes to its companion <a href="https://amzn.to/3hix96S">RX4</a> in the lighting booth. On the RX4, the thru XLR is sent to self-powered loudspeakers to cover the lobby; the output XLR is patched into a small mixer whose mains are fed to a pair of <a href="https://amzn.to/3hoKdb0">Presonus E3.5 studio monitors</a> allowing the lighting crew to control levels in their space.</p>
+
+<p>The main L/R mix is also sent to the venue DSP (via Dante) which provides for dressing room 2, makeup rooms, and backup for the lighting booth.</p>
+
+<h3>Monitor World</h3>
+
+<p>Monitor World (MW) handles sixteen dedicated mixes, one for each band member's in-ear monitor (IEM), as well as mixes for lead wedges, backup wedges, and recording.</p>
+
+<p><a href="https://www.flickr.com/photos/techmsg/49653931821/in/album-72157712649718376/" title="IMG_20200312_193533531"><img src="https://live.staticflickr.com/65535/49653931821_99ea1c7ee3_z.jpg" width="640" height="360" alt="IMG_20200312_193533531"></a></p>
+
+<p>IEM bus outputs are fanned into a 150' multipin cable, fanned out on the band deck, converted from XLR-F to 1/4" TRS (via a pair of <a href="https://amzn.to/30Czofl">Seismic SAXT-8x5F</a> snakes), and patched into a pair of <a href="https://amzn.to/3cVfgI5">Behringer 8-channel Headphone Amps</a>. From the headphone amp outputs, 25-foot <a href="https://amzn.to/2N0yRvD">1/4" TRS to 3.5mm cables</a> are run to each band member's station where they can plug in their own earbuds or headphones. In this model, every band member gets their own dedicated mix and can self-manage their own IEM volume levels without leaving the platform.</p>
+
+<p>Wedge buses are patched directly to a nearby amp rack.</p>
+
+<p>Recording bus outputs are patched into a <a href="https://amzn.to/2UFGs7g">Behringer UMC404HD</a> audio interface attached to an old MacBook Pro running <a href="https://www.audacityteam.org/">Audacity</a>.</p>
+
+<h2>Mic Selection</h2>
+
+<p>When selecting mics we attempt to strike a balance between quality and budget; it does no good to bring in a touring-grade line array if the inputs are crap. We utilize some school-owned equipment, but the production itself has invested in equipment over the years too. We supplement gear on-hand with rental equipment for ease, reliability, and flexibility.</p>
+
+<h3>Vocals</h3>
+
+<p>As far as vocals are concerned, we're a <a href="https://www.shure.com/">Shure</a> shop: <a href="https://amzn.to/2XOuTg6">ULXD2/B58 handhelds</a> for lead vocals, <a href="https://amzn.to/2BOXycc">BLX288/SM58</a> for backup vocals. In past years backups were wired <a href="https://amzn.to/37hT6yi">SM58</a> but in 2020 we migrated to wireless which greatly simplified cabling requirements and provided more flexible blocking.</p>
+
+<p><a href="https://www.flickr.com/photos/techmsg/49654212172/in/album-72157712649718376/" title="IMG_20200312_193905138"><img src="https://live.staticflickr.com/65535/49654212172_93d7e4cf58_z.jpg" width="640" height="360" alt="IMG_20200312_193905138"></a></p>
+
+<p>If a vocalist needs to dance hands-free, we use a <a href="https://amzn.to/2BVwXuc">PGA31</a> headset condenser microphone with <a href="https://amzn.to/2XQKD2f">ULXD1</a> or <a href="https://amzn.to/2XPn6hR">PGXD1</a> body pack transmitter. For mobile instruments onstage like guitars, violins, or ukuleles, we use a <a href="https://amzn.to/37rjaaw">WB98H/C</a> instrument mic or <a href="https://amzn.to/2XPQFzQ">WA302</a>/<a href="https://amzn.to/2Ux33TD">WA304</a> instrument cable with the same transmitters.</p>
+
+<p>Talkback mic at FOH is the trusty <a href="https://amzn.to/37hT6yi">Shure SM58</a>.</p>
+
+<p><a href="https://www.flickr.com/photos/techmsg/33341700652/in/photolist-SNhVZN" title="Photo"><img src="https://live.staticflickr.com/3903/33341700652_94a2a68f8e_z.jpg" width="640" height="373" alt="Photo"></a></p>
+
+<p>Talkback mics at MW and on the band deck are <a href="https://amzn.to/2XOfJHz">Shure Beta 58</a> to further eliminate noise from wedges, although if they're not available the <a href="https://amzn.to/37hT6yi">Shure SM58</a> works just fine.</p>
+
+<h3>Instruments</h3>
+
+<p>Over the last couple of years I've slowly been upgrading our DI boxes. I'm a big fan of <a href="https://www.radialeng.com/">Radial Engineering</a>; no sponsorship, but their boxes are built like tanks and though designed and built for the rigors of touring they hold up to our students just as well.</p>
+
+<p>For bass guitar, <a href="https://amzn.to/3hcyXOO">Radial J48 Active</a>.</p>
+
+<p>For guitarists whose amps don't have direct out, <a href="https://amzn.to/2Ao7vNw">Radial JDX Direct Drive</a>. Even when buried beneath the deck within a sound-dampening enclosure, live cabs make for an uncomfortably loud experience for those backstage. If we must mic a live cab, <a href="https://amzn.to/2XPMq7o">Sennheiser e906</a>. AC power for guitar amps is filtered through a <a href="https://amzn.to/3dfXIXg">Furman AC-215A power conditioner</a>.</p>
+
+<p>For ukulele and acoustic guitars with powered pickups, <a href="https://amzn.to/2MP8AjS">Radial JDI Passive</a>.</p>
+
+<p>For keyboards and computers, <a href="https://amzn.to/3ffcBdw">Radial ProAV2</a>. AC power for instruments is filtered through a <a href="https://amzn.to/2zHkTMe">Furman SS6B power conditioners</a>.</p>
+
+<p>For the drum kit:</p>
+
+<ul>
+<li>Kick drum - <a href="https://amzn.to/2BMCAL1">Shure Beta 91A</a> or <a href="https://amzn.to/37iVUeE">Shure Beta 52A</a></li>
+<li>Hi hat - <a href="https://amzn.to/3cNRFch">Shure SM57</a></li>
+<li>Snare - <a href="https://amzn.to/3cNRFch">Shure SM57</a></li>
+<li>Toms - <a href="https://amzn.to/3cS4kLl">Sennheiser E604</a></li>
+<li>Overheads - <a href="https://amzn.to/2MPK9mB">Shure SM81-LC</a>, <a href="https://amzn.to/2B2dGqj">Rode M5-MP</a>, or <a href="https://amzn.to/2UzFrxD">Audio-Technica PRO 37</a></li>
+</ul>
+
+<p>For percussion, <a href="https://amzn.to/3cNRFch">Shure SM57</a> and/or pair of <a href="https://amzn.to/2B2dGqj">Rode M5-MP</a> depending on the spread of the kit.</p>
+
+<p>For brass, we use stand-mounted mics:</p>
+
+<ul>
+<li>Trombones - Audio-Technica AT3525 (discontinued), <a href="https://amzn.to/30DXQNC">Shure Beta 57A</a>, or <a href="https://amzn.to/3cNRFch">Shure SM57</a></li>
+<li>Trumpets - <a href="https://amzn.to/37hT6yi">Shure SM58</a> or <a href="https://amzn.to/3cNRFch">Shure SM57</a></li>
+<li>Saxophones - <a href="https://amzn.to/37hT6yi">Shure SM58</a> or <a href="https://amzn.to/3cNRFch">Shure SM57</a></li>
+</ul>
+
+<p>Up until a few years ago we used clip-on mics like the <a href="https://amzn.to/37qbs0c">Audio-Technica PRO 35</a> for brass, but we found that a) constant removal during breaks resulted in inconsistent input b) our band's physical activities did quite a number on the thin cabling despite best efforts to provide strain relief.</p>
+
+<p>To reduce the amount of wiring on the band deck we don't use external power injectors; the MW console provides 48v for condenser mics, active direct boxes, and anything else onstage requiring phantom power.</p>
+
+<p>And that's it!</p>
+<!-- start of footer -->
+<p><small>Last Modified: <a href="https://github.com/technmsg/blog/blob/master/v2/content/2020/06/18/rnr31-sound-design.md">2020-06-18</a></small></p>
+
+<p>&sect;</p>
+
+<!-- minimal navigation -->
+<p>
+  <a href="/v2/">Home</a> | <a href="/v2/all.html">All Entries</a> | <a href="/v2/search.html">Search</a> | <a href="/v2/errata.html">Errata</a>
+</p>
+
+<!-- copyright and licensing -->
+<p><small>Copyright &copy; 2014-2023 <a href="/v2/alex.html">Alex Moundalexis</a>, licensed under a <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons License</a>. Some rights reserved.</small></p>
+
+<!-- cloudflare web analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "fcf30257ddf04d25ac73a5536c7257e3"}'></script>
+
+</div>
+</body>
+</html>

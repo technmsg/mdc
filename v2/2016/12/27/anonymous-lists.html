@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Anonymous Mailing Lists with Mailman</title>
+<link rel="alternate" type="application/atom+xml" title="v2 RSS Feed" href="https://moundalexis.com/v2/index.atom.xml" />
+<link rel="stylesheet" type="text/css" href="/v2/css/skeleton.css">
+<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="@technmsg" />
+<meta property="twitter:title" content="Anonymous Mailing Lists with Mailman" />
+<meta property="twitter:description" content="A quick guide to running anonymous mailing lists with Postfix, GNU Mailman, SPF, and DKIM." />
+<meta property="twitter:url" content="https://moundalexis.com/v2/2016/12/27/anonymous-lists.html" />
+</head>
+
+<body>
+<div class="container">
+<!-- end of header -->
+<!-- title: Anonymous Mailing Lists with Mailman -->
+<!-- categories: howto -->
+<!-- tags: postfix,mailman,anonymous,email,dkim,spf -->
+<!-- published: 2016-12-27T15:15:00-05:00 -->
+<!-- updated: 2020-08-09T15:15:00-05:00 -->
+<!-- summary: A quick guide to running anonymous mailing lists with Postfix, GNU Mailman, SPF, and DKIM. -->
+
+<h1>Anonymous Mailing Lists with Mailman</h1>
+
+<p>I run several anonymous mailing lists using <a href="https://list.org/">GNU Mailman</a> and <a href="http://www.postfix.org/">Postfix</a>.</p>
+
+<p>The first list started as part social and part technical experiment: a quasi-anonymous mailing list composed of "trusted" subscribers, in this case individuals with a shared employment history. The goal was to provide a venue to share previously-unspoken parting thoughts, industry rumors, and recollections.</p>
+
+<p>Anonymity in email isn't simple, nor should it be depended upon for much more than amusement. Mailman has supported anonymous lists for years with minimal effort, but recent improvements to email security have made things a little more complicated. Over time and with a fair bit of trial and error, I've tuned my Mailman and Postfix configurations to reduce the leakage of subscriber identity. These days it's more common to see a subscriber include a personal email signature by mistake, outing themselves at the poster of a message.</p>
+
+<p>There are social challenges too. When content isn't easily attributed to authors, some authors have a tendency to shit on others. Threads between a couple frustrated community members -- even those who know each other in real life -- can quickly devolve into a truly negative space that impacts participation from the whole. I plan to write more about these aspects in the future.</p>
+
+<p>Anonymity in email isn't for everyone, but here's how to go about it. The following instructions assume you're already running Mailman 2.1.15+ and Postfix 2.10+. File paths assume a package-based distribution, such as CentOS 7.2. YMMV.</p>
+
+<h2>Mailman list configuration</h2>
+
+<p>Navigate to the list’s administration page and make a few changes to general, privacy, and archival settings.</p>
+
+<h3>General</h3>
+
+<pre><code>from_is_list: no
+anonymous_list: yes
+new_member_options: Conceal the member's address
+</code></pre>
+
+<p>Most of the magic happens when you enable <code>anonymous_list</code>; it hides the sender of a message, replacing it with the list address (removing From, Sender, and Reply-To fields).</p>
+
+<h3>Privacy</h3>
+
+<pre><code>Subscription: subscribe_policy: confirm and approve
+</code></pre>
+
+<p>Approval is <em>highly recommended</em> if not mandatory. You really do <em>not</em> want random people subscribing and spamming your members. Your mail server will likely end up blacklisted.</p>
+
+<pre><code>private_roster: List members OR List admin only
+</code></pre>
+
+<p>This can be set to taste. For some lists, it's important that member identity be private. For others, it's more important that the content not be associated with any particular member. </p>
+
+<h3>Archiving Options</h3>
+
+<pre><code>archive_private: private
+</code></pre>
+
+<p>Downloaded archives include more complete headers which can be used to glean source domains, especially if DKIM headers aren't removed. It's recommended that archives be private if not disabled entirely.</p>
+
+<h2>Remove DKIM headers</h2>
+
+<p><a href="http://www.dkim.org/">DomainKeys Identified Mail</a> (DKIM) lets an organization take responsibility for a message that is in transit. The organization is a handler of the message, either as its originator or as an intermediary. Their reputation is the basis for evaluating whether to trust the message for further handling, such as delivery.</p>
+
+<p><strong>DKIM can undermine your goals of anonymity.</strong> DKIM-signed messages can reveal a subscriber's domain name. For large providers like Gmail or Yahoo! this isn't too revealing as they have millions of users, but for smaller vanity domains that might only service a single user it could be more illuminating (and embarrassing).</p>
+
+<p><strong>Running an anonymous mailing list will break DKIM signatures.</strong> When DKIM signatures can't be verified, delivery to the end user may be denied and your mail server may be throttled or flagged as behaving badly.</p>
+
+<p><strong>That doesn't mean you should disable DKIM.</strong> DKIM is useful. Signing your messages contributes toward being a good netizen and also toward successful delivery. But running an anonymous mailing list will break DKIM. And it should.</p>
+
+<p>Remember what Mailman's <code>anonymous_list</code> function does: we're changing the very same header fields that were cryptographically signed. Naturally the signature validation will fail. Even if we don't anonymize the list and leave the header fields alone, DKIM body checks will fail as soon as Mailman appends a list footer.</p>
+
+<p>We instruct Mailman to remove inbound DKIM headers by editing <code>/etc/mailman/mm_cfg.py</code>:</p>
+
+<pre><code>REMOVE_DKIM_HEADERS = Yes
+</code></pre>
+
+<p>Restart Mailman.</p>
+
+<p><a href="https://wiki.list.org/DEV/DKIM">Some may disagree with this</a>, but when you re-send an email through a list server you're effectively taking responsibility for the message and its recipients. It's <em>your</em> MTA that will be seen as originating the message. In many cases, we're altering and appending to the content so it makes sense that we take responsibility. Postfix will still sign the outbound message using DKIM, asserting that your mail server is taking responsibility for the message in its entirety.</p>
+
+<h2>Postfix configuration</h2>
+
+<h3>Strip SPF headers</h3>
+
+<p><a href="http://www.open-spf.org/">Sender Policy Framework</a> (SPF) can be a useful tool for combating spam, but it can inadvertently reveal the original sender of an email. For an anonymous mailing list, this poses a problem.</p>
+
+<p>If you're using <a href="https://launchpad.net/pypolicyd-spf">pypolicyd-spf</a> or some other SPF policy daemon, you might see lines like this in your mail headers.</p>
+
+<pre><code>Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=2607:f8b0:4002:c05::22e; helo=mail-yw0-x22e.google.com; envelope-from=username@gmail.com; receiver=anonymous-list@example.org
+</code></pre>
+
+<p>The <code>envelope-from</code> field reveals the poster (username@gmail.com) and this header will be distributed to all list members!</p>
+
+<p>Because we're taking responsibility for this now-anonymized and altered content, we can remove the <code>Received-SPF</code> header from outgoing messages. In <code>/etc/postfix/header_checks</code>, add the following line and change the <code>receiver</code> value to reflect the address of your list.</p>
+
+<pre><code>/^Received-SPF.*receiver=anonymous-list@example.org/ IGNORE
+</code></pre>
+
+<p>In Postfix parlance, <code>IGNORE</code> deletes the current line from the input, and moves on to inspect the next input line.</p>
+
+<p>If not configured already, configure Postfix to perform header checks by adding the following line to <code>/etc/postfix/main.cf</code>:</p>
+
+<pre><code>header_checks = regexp:/etc/postfix/header_checks
+</code></pre>
+
+<p>Reload Postfix.</p>
+
+<h2>Evidence</h2>
+
+<p>Anonymous mailing lists aren't truly anonymous, especially to the mail server administrator.</p>
+
+<p>The identity of a poster will appear in Mailman logs, for example within <code>/var/log/mailman/post</code>:</p>
+
+<pre><code>post to anonymous-list from Example User &lt;example@gmail.com&gt; anonymized
+</code></pre>
+
+<p>It's generally a good idea to keep these logs around, for troubleshooting, handling any incidents of abuse, or potential legal inquiries. On the other hand, it'd be trivial to find and replace the poster's name and email address with hashed values.</p>
+
+<p>The identity of a poster will also appear in the Postfix logs. The Postfix queue manager will absolutely reveal a message's sender; the SPF policy daemon and other content filters (like <a href="https://www.amavis.org/">Amavis</a>) will likely do the same.</p>
+
+<pre><code>policyd-spf: None; identity=helo; client-ip=2a00:1450:400c:c01::22c; helo=mail-wj0-x22c.google.com; envelope-from=example@gmail.com; receiver=anonymous-list@example.org
+policyd-spf: Pass; identity=mailfrom; client-ip=2a00:1450:400c:c01::22c; helo=mail-wj0-x22c.google.com; envelope-from=example@gmail.com; receiver=anonymous-list@example.org
+postfix/qmgr: 8FF054A04: from=&lt;example@gmail.com&gt;, size=4466, nrcpt=1 (queue active)
+amavis: Passed CLEAN {RelayedInbound}, [127.0.0.1] [2a00:1450:400c:c01::22c] &lt;example@gmail.com&gt; -&gt; &lt;anonymous-list@example.org&gt;, Message-ID: &lt;8cfe9ba47212bed47a4f75bcea819a29@mail.gmail.com&gt;, mail_id: Guv1T-zpvNAH, Hits: -0.099, size: 3701, queued_as: 8FF054A04, 447 ms
+</code></pre>
+
+<p>Like the Mailman logs above, it's a good idea to keep these around for troubleshooting. Over time these logs are typically rotated and disposed of, but should further scrubbing be required you could retrieve a list of anonymized posters from the Mailman logs and use that to replace references with hashed values.</p>
+
+<p>Should you need <em>actual</em> anonymity, an email-based mailing list isn't the way to go about it.</p>
+<!-- start of footer -->
+<p><small>Last Modified: <a href="https://github.com/technmsg/blog/blob/master/v2/content/2016/12/27/anonymous-lists.md">2020-08-09</a></small></p>
+
+<p>&sect;</p>
+
+<!-- minimal navigation -->
+<p>
+  <a href="/v2/">Home</a> | <a href="/v2/all.html">All Entries</a> | <a href="/v2/search.html">Search</a> | <a href="/v2/errata.html">Errata</a>
+</p>
+
+<!-- copyright and licensing -->
+<p><small>Copyright &copy; 2014-2023 <a href="/v2/alex.html">Alex Moundalexis</a>, licensed under a <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons License</a>. Some rights reserved.</small></p>
+
+<!-- cloudflare web analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "fcf30257ddf04d25ac73a5536c7257e3"}'></script>
+
+</div>
+</body>
+</html>

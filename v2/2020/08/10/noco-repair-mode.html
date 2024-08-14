@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NOCO GENIUS Repair Mode</title>
+<link rel="alternate" type="application/atom+xml" title="v2 RSS Feed" href="https://moundalexis.com/v2/index.atom.xml" />
+<link rel="stylesheet" type="text/css" href="/v2/css/skeleton.css">
+<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta property="twitter:card" content="summary" />
+<meta property="twitter:site" content="@technmsg" />
+<meta property="twitter:title" content="NOCO GENIUS Repair Mode" />
+<meta property="twitter:description" content="Recovering a dead hybrid accessory battery using NOCO GENIUS 5 charger." />
+<meta property="twitter:url" content="https://moundalexis.com/v2/2020/08/10/noco-repair-mode.html" />
+</head>
+
+<body>
+<div class="container">
+<!-- end of header -->
+<!-- title: NOCO GENIUS Repair Mode -->
+<!-- categories: howto -->
+<!-- tags: noco,genius,battery -->
+<!-- published: 2020-08-10T09:30:00-05:00 -->
+<!-- updated: 2020-08-10T09:30:00-05:00 -->
+<!-- summary: Recovering a dead hybrid accessory battery using NOCO GENIUS 5 charger. -->
+
+<h1>NOCO GENIUS Repair Mode</h1>
+
+<p>ℹ️ As an Amazon Associate I earn from qualifying purchases. (<a href="/v2/affiliates.html">details</a>)</p>
+
+<p>Taking the Repair mode for a spin using a <a href="https://amzn.to/2BCVjce">NOCO GENIUS 5</a>, attempting to recover an old battery. This is a follow-up to my previous <a href="/v2/2020/08/01/noco-genius.html">review of the NOCO GENIUS charger/tender series</a>.</p>
+
+<p>The accessory battery from a friend's Toyota hybrid was dying as soon as the hybrid system was disabled. He had already replaced the battery, so it had already been disconnected and removed from the vehicle. Perfect candidate for experimenting with the NOCO GENIUS charging and repair modes.</p>
+
+<p><a href="https://www.flickr.com/photos/techmsg/50198950116/in/dateposted/" title="Panasonic S5523R Hybrid Battery"><img src="https://live.staticflickr.com/65535/50198950116_29e70436e9_z.jpg" width="640" height="480" alt="Panasonic S5523R Hybrid Battery"></a></p>
+
+<p>The battery was a Panasonic S55D23R, offering 335 CCA and 51 Ah. Not hugely capable, but its only responsibilities were starting the hybrid system and running 12V electronics when the hybrid system was disabled. It lived in a sheltered compartment in the trunk, so despite being old it was impeccably clean.</p>
+
+<h2>Initial Measurements</h2>
+
+<p>I used a multi-meter to measure battery voltage before starting.</p>
+
+<p><a href="https://www.flickr.com/photos/techmsg/50189009628/" title="Dead 12 Volt Car Battery"><img src="https://live.staticflickr.com/65535/50189009628_c6bb801991_z.jpg" width="640" height="480" alt="Dead 12 Volt Car Battery"></a></p>
+
+<p>The battery was producing 4.54 volts DC (VDC). That's pretty danged dead.</p>
+
+<h2>Normal Charge</h2>
+
+<p>NOCO recommends running a battery through a normal charging cycle before attempting to repair.</p>
+
+<p>Connect the positive clamp, then the negative, then plug in the charger.</p>
+
+<p>Note: I plugged the charger into an inexpensive <a href="https://www.amazon.com/gp/product/B00E945SJG/?tag=v2mdc-20">power meter</a> to observe the voltage, amperage, power, and total kWh used throughout the charging and subsequent repair process.</p>
+
+<p><a href="https://www.flickr.com/photos/techmsg/50189009618/in/dateposted/" title="Measuring Battery Charging Current"><img src="https://live.staticflickr.com/65535/50189009618_d36701b6a4_z.jpg" width="640" height="480" alt="Measuring Battery Charging Current"></a></p>
+
+<p>The battery in question was a standard lead-acid (read: non-AGM, non-lithium) variety so I pressed the Mode button once until the 12V indicator illuminated. Charging commenced shortly afterward.</p>
+
+<p>I didn't shoot a video, but with power meter you can watch the current pulse. The battery will take 0.5A for a second or two, then 0.7A for another second or two, and then back to 0.5A. And as the charging process progresses the amperage levels increase gradually, but always pulsing.</p>
+
+<p>The User Guide provides estimated charging times based on battery size (Ah) and a 50% depth of discharge (DOD):</p>
+
+<ul>
+<li>20 Ah in 3 hours</li>
+<li>40 Ah in 6 hours</li>
+<li>80 Ah in 12 hours</li>
+<li>100 Ah in 15 hours</li>
+<li>120 Ah in 18 hours</li>
+</ul>
+
+<p>Extrapolating, 60 Ah might have taken 9 hours. Temperature also impacts charging times. It was warm outside for the duration of the experiment. And this battery was significantly more discharged.</p>
+
+<p>It took about two (2) days for the green Charge LED to be solid green, indicating charging complete. It's entirely possible it finished overnight, but I wasn't in a rush to gather exact timings. That's one of the perks of smart battery tenders, once they're done with the charge you can leave them connected indefinitely without worry or harm.</p>
+
+<p>I unplugged the charger and took a reading with the multi-meter: the battery was producing 13.16 VDC. An hour later with the clamps still on, the 13.04 VDC.</p>
+
+<p>The power meter reported a range in power between 2 and 93.6 watts during the charging period, consuming 0.946 kWh in total. From my utility company, that represents around $0.11 worth of electricity.</p>
+
+<h2>Repair Mode</h2>
+
+<p>With the battery charged, it was time for repair mode.</p>
+
+<p>Press and hold the Mode button for 3 seconds until the 6V LED illuminates, then press the Mode button once more to switch to 12V Repair mode. A red LED will illuminate.</p>
+
+<p>The repair mode lasted about four (4) hours, just as the User Guide suggested. Toward the end I could hear the <a href="https://homebatterybank.com/is-it-normal-for-my-battery-to-bubble-when-charging/">quiet bubbling sounds of electrolysis</a> emanating from the battery; no steaming, venting of gases, or warmth to the battery casing. The charger returned to Standby mode after completion.</p>
+
+<p>The battery was producing 13.20 VDC.</p>
+
+<p>The power meter reported a range in power between 2 and 18.3 watts during the charging period, consuming 0.046 kWh in total. From my utility company, that represents around $0.005 worth of electricity.</p>
+
+<h2>Subsequent Measurement</h2>
+
+<p>To see how the battery was holding the charge, I took measurements for a few days after completing the repair.</p>
+
+<ul>
+<li>0 hours: 13.20 VDC</li>
+<li>24 hours: 12.94 VDC</li>
+<li>48 hours: 12.84 VDC</li>
+<li>72 hours: 12.77 VDC</li>
+<li>96 hours: 12.73 VDC</li>
+</ul>
+
+<p>The battery appears to be losing 1-2% of its initial charge every day. If discharge continues at that rate, the vehicle would need to be driven (or battery otherwise recharged once per week) to stay in usable condition. I wouldn't use it as a primary battery in a vehicle, but left tended it could be put into "service" as a backup battery should my friend run into trouble with his new battery.</p>
+<!-- start of footer -->
+<p><small>Last Modified: <a href="https://github.com/technmsg/blog/blob/master/v2/content/2020/08/10/noco-repair-mode.md">2020-08-10</a></small></p>
+
+<p>&sect;</p>
+
+<!-- minimal navigation -->
+<p>
+  <a href="/v2/">Home</a> | <a href="/v2/all.html">All Entries</a> | <a href="/v2/search.html">Search</a> | <a href="/v2/errata.html">Errata</a>
+</p>
+
+<!-- copyright and licensing -->
+<p><small>Copyright &copy; 2014-2023 <a href="/v2/alex.html">Alex Moundalexis</a>, licensed under a <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons License</a>. Some rights reserved.</small></p>
+
+<!-- cloudflare web analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "fcf30257ddf04d25ac73a5536c7257e3"}'></script>
+
+</div>
+</body>
+</html>
